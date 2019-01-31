@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 2.8)
-project(test)
+project(example)
 
 include_directories(
     ../include
 )
 
 link_directories(
-    ../install
+    ../install/lib
 )
-link_libraries(test epserever)
-add_executable(test test_main.c)
+link_libraries(example epserver)
+add_executable(example test_main.c)
+

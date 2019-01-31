@@ -256,6 +256,8 @@ epoll_server_t *epoll_server_init(unsigned port, recv_callback handler, int max_
         goto Error1;
     }
 
+    return evs;
+
     Error1:        
         free(evs);
     Error0:
