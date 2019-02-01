@@ -6,6 +6,13 @@ Because based epoll interface, only support linx environment.
 - easy interface to use
 - use callback to handle recv data
 
+## Build
+``` shell
+make
+make install
+```
+the library will installed in install/lib of source dir
+
 ## Example
 simple echo server:
 ``` c
