@@ -167,61 +167,6 @@ void handle_client_message(int fd, epoll_server_t *server)
 
     vecbuf_free(vecBuf);
 }
-/*
-int epoll_start(int listenFd)
-{
-    int epfd, ret, ready, i;
-    struct epoll_event ev;
-    struct epoll_event events[MAXEPOLLSIZE];
-
-    epfd = epoll_create(MAXEPOLLSIZE);
-    if(epfd < 0)
-    {
-        perror("epoll create");
-        return -1;
-    }
-
-    ev.events = EPOLLIN;
-    ev.data.fd = listenFd;
-
-    ret = epoll_ctl(epfd, EPOLL_CTL_ADD, listenFd, &ev);
-    if(ret < 0)
-    {
-        perror("epoll_ctl");
-        return -1;
-    }
-
-    while(1)
-    {
-        ready = epoll_wait(epfd, events, MAXEPOLLSIZE, 1000);
-        if(ready < 0)
-        {
-            perror("epoll_wait.");
-            return -1;
-        }
-        else if(ready == 0)
-        {
-            continue;
-        }
-        else        
-        {
-            for(i = 0; i < ready; i++)
-            {
-                if(events[i].data.fd == listenFd)
-                {
-                    server_do_accept(listenFd, epfd);
-                }
-                else
-                {
-                    handle_client_message(events[i].data.fd, epfd, recv_echo_callback);   
-                    //handle_client_message(events[i].data.fd, epfd, recv_data_parse);   
-                }
-            }
-        }
-        
-    }
-	close(epfd);
-}*/
 
 epoll_server_t *epoll_server_init(unsigned port, recv_callback handler, int max_client)
 {
