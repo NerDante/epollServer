@@ -8,7 +8,7 @@ Because based epoll interface, only support linx environment.
 
 ## Example
 simple echo server:
-```
+``` c
 #include <stdio.h>
 #include <stdlib.h>
 #include "epollServer.h"
