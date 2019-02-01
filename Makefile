@@ -8,6 +8,7 @@ build:
 
 install:
 	cp build/src/libepserver.so install/lib
+	cp build/example/example install/bin
 
 clean:
 	rm -rf build install

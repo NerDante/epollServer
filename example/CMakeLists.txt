@@ -6,7 +6,7 @@ include_directories(
 )
 
 link_directories(
-    ../install/lib
+    ${PROJECT_SOURCE_DIR}/../install/lib
 )
 link_libraries(example epserver)
 add_executable(example test_main.c)
