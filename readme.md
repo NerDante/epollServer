@@ -1,4 +1,4 @@
-# Simple Epoll Server
+# Simple Epoll-based  TCP Server
 Because based epoll interface, only support linx environment.
 ## Features
 - pure c implement
