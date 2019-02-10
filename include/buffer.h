@@ -1,3 +1,7 @@
+/********************************************************************************
+ * A Buffer can expend it's self, when the unused len of buffer less than the
+ * data to append to tail, the buffer's capacity will expend. 
+ * *****************************************************************************/
 #ifndef __VECBUF_H__
 #define __VECBUF_H__
 

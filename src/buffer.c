@@ -94,14 +94,6 @@ int vecbuf_add_tail(VecBuff_t *vecBuf, const char *data, unsigned int len)
     return 0;
 }
 
-/* 向指定位置写数据，貌似没有必要，赞不实现 */
-/*
-int vec_buf_write(VecBuff_t *vecBuf, unsigned int offset, const char *data, unsigned int len)
-{
-
-}
-*/
-
 int vecbuf_read(VecBuff_t *vecBuf, unsigned int offset, char *data, unsigned int len)
 {
     unsigned int validLen;
