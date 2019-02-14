@@ -40,12 +40,10 @@ void vecbuf_free(VecBuff_t *vecBuf)
 
 static int vecbuf_capacity_extend(VecBuff_t *vecBuf)
 {
-    unsigned int oldCap;
     char *tmp;
 
     /* 保存原地址，用于realloc失败的恢复 */
     tmp = vecBuf->data;
-    oldCap = vecBuf->capacity;
     
     vecBuf->data = realloc(vecBuf->data, vecBuf->capacity * 2);
     if(NULL == vecBuf->data)

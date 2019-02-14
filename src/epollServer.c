@@ -37,21 +37,6 @@ int raw_dump(const char *buff, int len)
 	return 0;
 }
 
-void recv_data_parse(int cliFd, const char *data, unsigned int len)
-{
-    //do parse ....
-    printf("recv msg ascii  print:\n");
-    printf("%s\n", data);
-
-    printf("recv msg hex print:\n");
-    raw_dump(data, len);
-}
-
-void recv_echo_callback(int cliFd, const char *data, unsigned int len)
-{
-    send(cliFd, data, len, 0);
-}
-
 int setnonblocking(int sockfd)
 {
     if (fcntl(sockfd, F_SETFL, fcntl(sockfd, F_GETFD, 0)|O_NONBLOCK) == -1) 
