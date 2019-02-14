@@ -19,6 +19,18 @@ simple echo server:
 #include <stdio.h>
 #include <stdlib.h>
 #include "epollServer.h"
+// print recv data in hex format
+void recv_data_print(int cliFd, const char *data, unsigned int len)
+{
+    printf("recv msg hex print:\n");
+    raw_dump(data, len);
+}
+
+// echo callback, just send data back to client
+void recv_echo_callback(int cliFd, const char *data, unsigned int len)
+{
+    send(cliFd, data, len, 0);
+}
 
 int main(int argc, char *argv[])
 {
