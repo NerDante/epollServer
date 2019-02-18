@@ -18,16 +18,13 @@ int raw_dump(const char *buff, int len)
 {
 	int i = 0;
 
-	if(NULL == buff)
-	{
+	if(NULL == buff){
 		printf("NULL param\n");
 		return -1;
 	}
 
-	for(i = 0; i < len; i++)
-	{
-        if(i !=0 && i % 16 == 0)
-		{
+	for(i = 0; i < len; i++){
+        if(i !=0 && i % 16 == 0){
 			printf("\n");
 		}
 		printf("%02x ", buff[i]);		
@@ -39,8 +36,7 @@ int raw_dump(const char *buff, int len)
 
 int setnonblocking(int sockfd)
 {
-    if (fcntl(sockfd, F_SETFL, fcntl(sockfd, F_GETFD, 0)|O_NONBLOCK) == -1) 
-    {
+    if (fcntl(sockfd, F_SETFL, fcntl(sockfd, F_GETFD, 0)|O_NONBLOCK) == -1){
 		printf("set nonblock fail\n");
         return -1;
     }
@@ -58,27 +54,23 @@ int create_listen_and_bind(short port)
     seraddr.sin_port = htons(port);
 
     sockFd = socket(AF_INET, SOCK_STREAM, 0);
-    if(sockFd < 0)
-    {
+    if(sockFd < 0){
         perror("socket error");
         return -1;
     }
 
-    if (setnonblocking(sockFd) < 0)
-    {
+    if (setnonblocking(sockFd) < 0){
         perror("setnonblock error");
     }
 
     ret = bind(sockFd, (struct sockaddr *)&seraddr, sizeof(struct sockaddr));
-    if(ret < 0)
-    {
+    if(ret < 0){
         perror("bind");
         return -1;
     }
 
     ret = listen(sockFd, 1000);
-    if(ret < 0)
-    {
+    if(ret < 0){
         perror("listen");
         return -1;
     }
@@ -94,14 +86,12 @@ void server_do_accept(int listenFd, int epfd)
     struct epoll_event ev;
     
     cliFd = accept(listenFd, (struct sockaddr *)&cliaddr,&socklen);
-    if(cliFd < 0)
-    {
+    if(cliFd < 0){
         perror("accept");
         return;
     }
 
-   if(setnonblocking(cliFd) < 0) 
-   {
+   if(setnonblocking(cliFd) < 0) {
        perror("setnonblocking error");
        return;
    }
@@ -115,38 +105,33 @@ void server_do_accept(int listenFd, int epfd)
 void handle_client_message(int fd, epoll_server_t *server)
 {
     VecBuff_t *vecBuf;
-    char recvbuf[2048];
+    char recvbuf[BUFF_BASE_SIZE];
     int len;
     struct epoll_event ev;
 
     vecBuf = vecbuf_init();
-    if(NULL == vecBuf)
-    {
+    if(NULL == vecBuf){
         printf("vec_buff_init fail\n");
         return;
     }
 
-    while((len = recv(fd, recvbuf, sizeof(recvbuf), 0)) > 0)
-    {
+    while((len = recv(fd, recvbuf, sizeof(recvbuf), 0)) > 0){
         vecbuf_add_tail(vecBuf, recvbuf, len);
     }
 
-    if(len == 0)       //client closed.
-	{		
+    if(len == 0) {      //client closed.			
 		ev.data.fd = fd;        
         epoll_ctl(server->epfd, EPOLL_CTL_DEL, fd, &ev);
         close(fd);
         printf("a client disconnect, fd = %d.\n",fd);
 
 	}
-    else if(len < 0 && errno != EAGAIN)
-	{
+    else if(len < 0 && errno != EAGAIN){
 		printf("recv error:%s\n", strerror(errno));
 	}
 
     //handle the data
-    if(vecBuf->used > 0)
-    {
+    if(vecBuf->used > 0){
         server->recv_handle(fd, vecBuf->data, vecBuf->used);
     }
 
@@ -208,8 +193,7 @@ void epoll_server_start(epoll_server_t *server)
         }else if(ready == 0){
             /* timeout, no ready */
             continue;
-        }
-        else {
+        }else {
             for(int i = 0; i < ready; i++){
                 if(events[i].data.fd == server->listen){
                     server_do_accept(server->listen, server->epfd);

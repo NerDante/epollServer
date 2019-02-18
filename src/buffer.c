@@ -12,14 +12,12 @@ VecBuff_t *vecbuf_init()
     VecBuff_t *vecBuf = NULL;
 
     vecBuf = malloc(sizeof(VecBuff_t));
-    if(NULL == vecBuf)
-    {
+    if(NULL == vecBuf){
         return NULL;
     }
 
     vecBuf->data = malloc(BUFF_BASE_SIZE);
-    if(NULL == vecBuf->data)
-    {
+    if(NULL == vecBuf->data){
         goto ERR;
     }
     vecBuf->capacity = BUFF_BASE_SIZE;
@@ -46,8 +44,7 @@ static int vecbuf_capacity_extend(VecBuff_t *vecBuf)
     tmp = vecBuf->data;
     
     vecBuf->data = realloc(vecBuf->data, vecBuf->capacity * 2);
-    if(NULL == vecBuf->data)
-    {
+    if(NULL == vecBuf->data){
         printf("buff capacity extend error\n");
         vecBuf->data = tmp;
 
@@ -64,23 +61,19 @@ int vecbuf_add_tail(VecBuff_t *vecBuf, const char *data, unsigned int len)
     int ret;
     static int failCount;
     
-    if(NULL == vecBuf || NULL == data)
-    {
+    if(NULL == vecBuf || NULL == data){
         printf("null pointer\n");
         return -1;
     }
 
-    while(len > (vecBuf->capacity - vecBuf->used))
-    {
+    while(len > (vecBuf->capacity - vecBuf->used)){
        ret =  vecbuf_capacity_extend(vecBuf);
-       if(ret < 0)
-       {
+       if(ret < 0){
            failCount++;
            printf("expand capacity fail, failtimes = %d\n", failCount);
        }
 
-       if(failCount > 10)
-       {
+       if(failCount > 10){
            printf("memery alloc abnormal,exit!!!!!\n");
            exit(-1);
        }
@@ -97,14 +90,12 @@ int vecbuf_read(VecBuff_t *vecBuf, unsigned int offset, char *data, unsigned int
     unsigned int validLen;
     unsigned int readLen;
    
-    if(NULL == vecBuf || NULL == data)
-    {
+    if(NULL == vecBuf || NULL == data){
         printf("null pointer\n");
         return -1;
     }
 
-    if(offset > vecBuf->used)
-    {
+    if(offset > vecBuf->used){
         printf("offset is beyond valid data\n");
         return -1;
     }

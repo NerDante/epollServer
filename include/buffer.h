@@ -5,7 +5,7 @@
 #ifndef __VECBUF_H__
 #define __VECBUF_H__
 
-#define BUFF_BASE_SIZE        4096
+#define BUFF_BASE_SIZE        1024
 
 typedef struct
 {
