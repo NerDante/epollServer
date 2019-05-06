@@ -13,7 +13,7 @@
 #include "buffer.h"
 #include "epollServer.h"
 
-/* buff内容按16进制打印 */
+/* buff内容�?6进制打印 */
 int raw_dump(const char *buff, int len)
 {
 	int i = 0;
@@ -43,7 +43,7 @@ int setnonblocking(int sockfd)
     return 0;
 }
 
-int create_listen_and_bind(short port)
+int create_tcp_listen(short port)
 {
     int sockFd, ret;
     struct sockaddr_in seraddr;
@@ -78,7 +78,36 @@ int create_listen_and_bind(short port)
     return sockFd;    
 }
 
-void server_do_accept(int listenFd, int epfd)
+int create_udp_listen(short port)
+{
+    int sockFd, ret;
+    struct sockaddr_in seraddr;
+
+    bzero(&seraddr, sizeof(struct sockaddr_in));
+    seraddr.sin_family = AF_INET;
+    seraddr.sin_addr.s_addr = INADDR_ANY;
+    seraddr.sin_port = htons(port);
+
+    sockFd = socket(AF_INET, SOCK_DGRAM, 0);
+    if(sockFd < 0){
+        perror("socket error");
+        return -1;
+    }
+
+    if (setnonblocking(sockFd) < 0){
+        perror("setnonblock error");
+    }
+
+    ret = bind(sockFd, (struct sockaddr *)&seraddr, sizeof(struct sockaddr));
+    if(ret < 0){
+        perror("bind");
+        return -1;
+    }
+
+    return sockFd;    
+}
+
+void server_tcp_do_accept(int listenFd, int epfd)
 {
     int cliFd;
     struct sockaddr_in cliaddr;
@@ -100,6 +129,19 @@ void server_do_accept(int listenFd, int epfd)
     ev.data.fd = cliFd;
 
     epoll_ctl(epfd, EPOLL_CTL_ADD, cliFd, &ev);
+}
+
+void server_udp_handle(epoll_server_t *server)
+{
+    char recvbuf[65536] = {0}; //65536
+    int len;
+    struct sockaddr_in clientaddr;
+    socklen_t clilen = sizeof(struct sockaddr);;
+    
+    len = recvfrom(server->listen, recvbuf, sizeof(recvbuf), 0, (struct sockaddr *)&clientaddr, &clilen);
+    if(len > 0){
+        server->udp_handle(server->listen, &clientaddr, recvbuf, len);
+    }
 }
 
 void handle_client_message(int fd, epoll_server_t *server)
@@ -132,13 +174,13 @@ void handle_client_message(int fd, epoll_server_t *server)
 
     //handle the data
     if(vecBuf->used > 0){
-        server->recv_handle(fd, vecBuf->data, vecBuf->used);
+        server->tcp_handle(fd, vecBuf->data, vecBuf->used);
     }
 
     vecbuf_free(vecBuf);
 }
 
-epoll_server_t *epoll_server_init(unsigned port, recv_callback handler, int max_client)
+epoll_server_t *epoll_tcp_server_init(unsigned port, tcp_recv_callback handler, int max_client)
 {
     epoll_server_t *evs = NULL;
     int ret = 0;
@@ -149,15 +191,16 @@ epoll_server_t *epoll_server_init(unsigned port, recv_callback handler, int max_
         printf("calloc fail.\n");
         goto Error0;
     }
-    evs->recv_handle = handler;
 
     evs->epfd = epoll_create(MAXEPOLLSIZE);
     if(evs->epfd < 0){
         perror("epoll create");
         goto Error1;
     }
- 
-    evs->listen = create_listen_and_bind(port);
+
+    evs->trans = TRANS_PTCP;
+    evs->tcp_handle = handler;
+    evs->listen = create_tcp_listen(port);
     if(evs->listen < 0){
         printf("listen and bind.\n");
         goto Error1;
@@ -179,6 +222,49 @@ epoll_server_t *epoll_server_init(unsigned port, recv_callback handler, int max_
         return NULL;
 }
 
+epoll_server_t *epoll_udp_server_init(unsigned port, udp_recv_callback handler, int max_client)
+{
+    epoll_server_t *evs = NULL;
+    int ret = 0;
+    struct epoll_event ev;
+
+    evs = calloc(1, sizeof(epoll_server_t));
+    if(NULL == evs){
+        printf("calloc fail.\n");
+        goto Error0;
+    }
+
+    evs->epfd = epoll_create(MAXEPOLLSIZE);
+    if(evs->epfd < 0){
+        perror("epoll create");
+        goto Error1;
+    }
+
+    evs->trans = TRANS_PUDP;
+    evs->udp_handle = handler;
+    evs->listen = create_udp_listen(port);
+    if(evs->listen < 0){
+        printf("listen and bind.\n");
+        goto Error1;
+    }
+
+    ev.events = EPOLLIN;
+    ev.data.fd = evs->listen;
+    ret = epoll_ctl(evs->epfd, EPOLL_CTL_ADD, evs->listen, &ev);
+    if(ret < 0){
+        perror("epoll_ctl");
+        goto Error1;
+    }
+
+    return evs;
+
+    Error1:        
+        free(evs);
+    Error0:
+        return NULL;
+}
+
+
 void epoll_server_start(epoll_server_t *server)
 {
     int ready;
@@ -196,7 +282,11 @@ void epoll_server_start(epoll_server_t *server)
         }else {
             for(int i = 0; i < ready; i++){
                 if(events[i].data.fd == server->listen){
-                    server_do_accept(server->listen, server->epfd);
+                    if(server->trans == TRANS_PTCP){
+                        server_tcp_do_accept(server->listen, server->epfd);
+                    }else{
+                        server_udp_handle(server);
+                    }
                 }else{
                     handle_client_message(events[i].data.fd, server); 
                 }
