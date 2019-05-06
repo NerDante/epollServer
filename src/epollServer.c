@@ -13,7 +13,6 @@
 #include "buffer.h"
 #include "epollServer.h"
 
-/* buff内容�?6进制打印 */
 int raw_dump(const char *buff, int len)
 {
 	int i = 0;

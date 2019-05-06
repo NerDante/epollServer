@@ -20,7 +20,7 @@ VecBuff_t *vecbuf_init()
     if(NULL == vecBuf->data){
         goto ERR;
     }
-    vecBuf->capacity = BUFF_BASE_SIZE;
+
     vecBuf->used = 0;
 
     return vecBuf;
