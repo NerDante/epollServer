@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    epoll_server_start(evs);
+    epoll_server_start(evs); // loop forever, unless exception is occured 
     epoll_server_delete(evs);
 
     return 0;

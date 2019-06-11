@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(example)
+project(echo_server)
 
 include_directories(
     ../include
@@ -8,6 +8,6 @@ include_directories(
 link_directories(
     ${PROJECT_SOURCE_DIR}/../install/lib
 )
-link_libraries(example epserver)
-add_executable(example test_main.c)
+link_libraries(echo_server epserver)
+add_executable(echo_server echo_server.c)
 
