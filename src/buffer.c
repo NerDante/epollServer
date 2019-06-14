@@ -22,6 +22,7 @@ VecBuff_t* vecbuf_init()
     }
 
     vecBuf->used = 0;
+    vecBuf->capacity = BUFF_BASE_SIZE;
 
     return vecBuf;
 
@@ -38,20 +39,18 @@ void vecbuf_free(VecBuff_t* vecBuf)
 
 static int vecbuf_capacity_extend(VecBuff_t* vecBuf)
 {
-    char* tmp;
+    void* tmp = NULL;
 
-    /* 保存原地址，用于realloc失败的恢复 */
-    tmp = vecBuf->data;
-
-    vecBuf->data = realloc(vecBuf->data, vecBuf->capacity * 2);
-    if (NULL == vecBuf->data) {
+    tmp = realloc(vecBuf->data, vecBuf->capacity * 2);
+    if(NULL == tmp)
+    {
         printf("buff capacity extend error\n");
-        vecBuf->data = tmp;
-
         return -1;
     }
+    vecBuf->data = tmp;
 
     vecBuf->capacity *= 2;
+    //printf("buff capacity success, now capacity = %u\n", vecBuf->capacity);
 
     return 0;
 }
@@ -59,7 +58,7 @@ static int vecbuf_capacity_extend(VecBuff_t* vecBuf)
 int vecbuf_add_tail(VecBuff_t* vecBuf, const char* data, unsigned int len)
 {
     int ret;
-    static int failCount;
+    int failCount = 0;
 
     if (NULL == vecBuf || NULL == data) {
         printf("null pointer\n");
@@ -71,11 +70,13 @@ int vecbuf_add_tail(VecBuff_t* vecBuf, const char* data, unsigned int len)
         if (ret < 0) {
             failCount++;
             printf("expand capacity fail, failtimes = %d\n", failCount);
+        }else{
+            failCount = 0;
         }
 
         if (failCount > 10) {
-            printf("memery alloc abnormal,exit!!!!!\n");
-            exit(-1);
+            printf("memery alloc abnormal!!!!!\n");
+            return -2;
         }
     }
 

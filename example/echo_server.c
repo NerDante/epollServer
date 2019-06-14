@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-#if 0
+#if 1
     evs = epoll_tcp_server_init(atoi(argv[1]), recv_echo_callback, 1024); //tcp
 #else
     evs = epoll_udp_server_init(atoi(argv[1]), udp_echo_callback, 1024); //udp
