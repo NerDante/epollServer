@@ -8,6 +8,7 @@ include_directories(
 link_directories(
     ${PROJECT_SOURCE_DIR}/../install/lib
 )
-link_libraries(echo_server epserver)
+link_libraries(epserver pthread)
 add_executable(echo_server echo_server.c)
+add_executable(multithread_echoserver multithread_server.c)
 
