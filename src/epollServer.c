@@ -13,6 +13,16 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+struct epoll_server_t {
+    int epfd;
+    trans_protocol_t trans;
+    int listen;
+    int stopFlag;
+
+    tcp_recv_callback tcp_handle;
+    udp_recv_callback udp_handle;
+};
+
 int raw_dump(const char* buff, int len)
 {
     int i = 0;
