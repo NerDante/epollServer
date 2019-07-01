@@ -268,6 +268,10 @@ void epoll_server_start(epoll_server_t* server)
     struct epoll_event events[MAXEPOLLSIZE];
 
     while (1) {
+        if (server->stopFlag) {
+            printf("server's stopFlag is set to true, exit\n");
+            break;
+        }
         ready = epoll_wait(server->epfd, events, MAXEPOLLSIZE, 1000);
         if (ready < 0) {
             perror("epoll_wait.");
@@ -289,6 +293,7 @@ void epoll_server_start(epoll_server_t* server)
             }
         }
     }
+
 }
 
 void epoll_server_delete(epoll_server_t* server)
@@ -298,4 +303,9 @@ void epoll_server_delete(epoll_server_t* server)
     }
     close(server->epfd);
     free(server);
+}
+
+void epoll_server_stop(epoll_server_t* server)
+{
+    server->stopFlag = 1;
 }
