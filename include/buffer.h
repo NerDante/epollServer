@@ -15,7 +15,7 @@ typedef struct
     char* data;
 } VecBuff_t;
 
-VecBuff_t* vecbuf_init();
+VecBuff_t* vecbuf_create();
 void vecbuf_free(VecBuff_t* vecBuf);
 int vecbuf_add_tail(VecBuff_t* vecBuf, const char* data, unsigned int len);
 int vecbuf_read(VecBuff_t* vecBuf, unsigned int offset, char* data, unsigned int len);

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(epll_server)
+project(epoll_server)
 
 include_directories(
     ../include

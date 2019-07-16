@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-VecBuff_t* vecbuf_init()
+VecBuff_t* vecbuf_create()
 {
     VecBuff_t* vecBuf = NULL;
 

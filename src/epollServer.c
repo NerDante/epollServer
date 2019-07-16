@@ -160,7 +160,7 @@ void handle_client_message(int fd, epoll_server_t* server)
     int len;
     struct epoll_event ev;
 
-    vecBuf = vecbuf_init();
+    vecBuf = vecbuf_create();
     if (NULL == vecBuf) {
         printf("vec_buff_init fail\n");
         return;
