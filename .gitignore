@@ -1,2 +1,5 @@
 build/
 install/
+.clang_complete
+.clangd/
+compile_commands.json
