@@ -1,5 +1,6 @@
 #ifndef __EPOLLSERVER_H__
 #define __EPOLLSERVER_H__
+#include <netinet/in.h>
 
 #define MAXEPOLLSIZE 10000
 #define MAXLINE 10240
