@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 project(echo_server)
 
 include_directories(
-    ../include
+    ../src
 )
 
 link_directories(

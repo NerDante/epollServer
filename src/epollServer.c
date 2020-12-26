@@ -1,5 +1,6 @@
 #include "epollServer.h"
 #include "buffer.h"
+#include "util.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -22,26 +23,6 @@ struct epoll_server_t {
     tcp_recv_callback tcp_handle;
     udp_recv_callback udp_handle;
 };
-
-int raw_dump(const char* buff, int len)
-{
-    int i = 0;
-
-    if (NULL == buff) {
-        printf("NULL param\n");
-        return -1;
-    }
-
-    for (i = 0; i < len; i++) {
-        if (i != 0 && i % 16 == 0) {
-            printf("\n");
-        }
-        printf("%02x ", buff[i]);
-    }
-    printf("\n");
-
-    return 0;
-}
 
 int setnonblocking(int sockfd)
 {
