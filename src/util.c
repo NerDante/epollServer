@@ -1,4 +1,8 @@
 #include <stddef.h>
+#include <stdint.h>
+#include <endian.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "util.h"
 
 int raw_dump(const char* buff, int len)
@@ -21,3 +25,28 @@ int raw_dump(const char* buff, int len)
     return 0;
 }
 
+uint16_t get_be16value(uint8_t *buf)
+{
+    uint16_t *ps = (uint16_t *)buf;
+    return be16toh(*ps);
+}
+
+uint32_t get_be32value(uint8_t *buf)
+{
+    uint32_t *ps = (uint32_t *)buf;
+    return be32toh(*ps);
+}
+
+void pack16be(uint8_t *buf, uint16_t host_value)
+{
+    uint16_t *ps;
+    ps = (uint16_t *)buf;
+    *ps = htobe16(host_value);
+}
+
+void pack32be(uint8_t *buf, uint32_t host_value)
+{
+    uint32_t *ps;
+    ps = (uint32_t *)buf;
+    *ps = htobe32(host_value);
+}
