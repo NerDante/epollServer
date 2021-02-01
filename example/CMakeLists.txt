@@ -10,5 +10,6 @@ link_directories(
 )
 link_libraries(epserver pthread)
 add_executable(echo_server echo_server.c)
+add_executable(tcp2udp tcp2udp.c)
 add_executable(multithread_echoserver multithread_server.c)
 
