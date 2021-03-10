@@ -49,8 +49,7 @@ static int send_udp_data(unsigned char* data, unsigned int dataLen, char* strIp,
 	return 0;
 }
 
-// echo callback, just send data back to client
-void recv_echo_callback(int cliFd, const char* data, unsigned int len)
+void recv_data_callback(int cliFd, const char* data, unsigned int len)
 {
 	const char resp[] = {0x6f,0x6b};
 
@@ -77,7 +76,7 @@ int main(int argc, char* argv[])
         strcpy(g_udpStrIp, "127.0.0.1");
     }
 
-    evs = epoll_tcp_server_init(atoi(argv[1]), recv_echo_callback, 1024); //tcp
+    evs = epoll_tcp_server_init(atoi(argv[1]), recv_data_callback, 1024); //tcp
     if (NULL == evs) {
         printf("epoll_server_init failed.\n");
         return -1;

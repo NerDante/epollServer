@@ -24,15 +24,6 @@ struct epoll_server_t {
     udp_recv_callback udp_handle;
 };
 
-int setnonblocking(int sockfd)
-{
-    if (fcntl(sockfd, F_SETFL, fcntl(sockfd, F_GETFD, 0) | O_NONBLOCK) == -1) {
-        printf("set nonblock fail\n");
-        return -1;
-    }
-    return 0;
-}
-
 int create_tcp_listen(short port)
 {
     int sockFd, ret;

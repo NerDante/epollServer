@@ -3,6 +3,8 @@
 #include <endian.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include "util.h"
 
 int raw_dump(const char* buff, int len)
@@ -49,4 +51,21 @@ void pack32be(uint8_t *buf, uint32_t host_value)
     uint32_t *ps;
     ps = (uint32_t *)buf;
     *ps = htobe32(host_value);
+}
+
+int setnonblocking(int fd)
+{
+    int flags;
+    if((flags = fcntl(fd, F_GETFD, 0)) < 0)
+    {
+        printf("get falg error\n");
+        return -1;
+    }
+
+    flags |= O_NONBLOCK;
+    if (fcntl(fd, F_SETFL, flags) < 0) {
+        printf("set nonblock fail\n");
+        return -1;
+    }
+    return 0;
 }
