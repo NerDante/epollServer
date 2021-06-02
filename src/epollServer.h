@@ -16,7 +16,6 @@ typedef enum {
 
 typedef struct epoll_server_t  epoll_server_t;
 
-int raw_dump(const char* buff, int len);
 epoll_server_t* epoll_tcp_server_init(unsigned port, tcp_recv_callback handler, int max_client);
 epoll_server_t* epoll_udp_server_init(unsigned port, udp_recv_callback handler, int max_client);
 void epoll_server_start(epoll_server_t* server);

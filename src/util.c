@@ -7,7 +7,7 @@
 #include <fcntl.h>
 #include "util.h"
 
-int raw_dump(const char* buff, int len)
+int raw_dump(const unsigned char* buff, int len)
 {
     int i = 0;
 
