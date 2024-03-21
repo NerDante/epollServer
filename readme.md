@@ -1,10 +1,9 @@
 # Simple Epoll-based  TCP/UDP Server
-Because based epoll interface, only support linx environment.
+Because based epoll interface, only support linux environment.
 ## Features
 - pure c implement
-- used buffer can extend it's self, user dosen't need care about it
-- easy interface to use
-- use callback to handle recv data
+- use buffer can extend it's self
+- use callback to handle receive data
 
 ## Build
 ``` shell
