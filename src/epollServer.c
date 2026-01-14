@@ -13,6 +13,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <signal.h>
 
 struct epoll_server_t {
     int epfd;
@@ -106,7 +107,7 @@ void server_tcp_do_accept(int listenFd, int epfd)
         return;
     }
 
-    ev.events = EPOLLIN;
+    ev.events = EPOLLIN | EPOLLET;
     ev.data.fd = cliFd;
 
     epoll_ctl(epfd, EPOLL_CTL_ADD, cliFd, &ev);
@@ -166,6 +167,8 @@ epoll_server_t* epoll_tcp_server_init(unsigned port, tcp_recv_callback handler, 
     int ret = 0;
     struct epoll_event ev;
 
+    signal(SIGPIPE, SIG_IGN);
+
     evs = calloc(1, sizeof(epoll_server_t));
     if (NULL == evs) {
         printf("calloc fail.\n");
@@ -207,6 +210,8 @@ epoll_server_t* epoll_udp_server_init(unsigned port, udp_recv_callback handler, 
     epoll_server_t* evs = NULL;
     int ret = 0;
     struct epoll_event ev;
+
+    signal(SIGPIPE, SIG_IGN);
 
     evs = calloc(1, sizeof(epoll_server_t));
     if (NULL == evs) {

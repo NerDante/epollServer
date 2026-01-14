@@ -56,7 +56,7 @@ void pack32be(uint8_t *buf, uint32_t host_value)
 int setnonblocking(int fd)
 {
     int flags;
-    if((flags = fcntl(fd, F_GETFD, 0)) < 0)
+    if((flags = fcntl(fd, F_GETFL, 0)) < 0)
     {
         printf("get falg error\n");
         return -1;
