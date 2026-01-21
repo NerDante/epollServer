@@ -109,3 +109,21 @@ int vecbuf_read(VecBuff_t* vecBuf, unsigned int offset, char* data, unsigned int
 
     return readLen;
 }
+
+int vecbuf_consume_head(VecBuff_t* vecBuf, unsigned int len)
+{
+    if (NULL == vecBuf) {
+        printf("null pointer\n");
+        return -1;
+    }
+
+    if (len >= vecBuf->used) {
+        vecBuf->used = 0;
+        return 0;
+    }
+
+    memmove(vecBuf->data, vecBuf->data + len, vecBuf->used - len);
+    vecBuf->used -= len;
+
+    return 0;
+}

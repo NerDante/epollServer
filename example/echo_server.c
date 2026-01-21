@@ -6,17 +6,32 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 
-// print recv data in hex format
 void recv_data_print(int cliFd, const char* data, unsigned int len)
 {
     printf("recv msg hex print:\n");
     raw_dump(data, len);
 }
 
-// echo callback, just send data back to client
 void recv_echo_callback(int cliFd, const char* data, unsigned int len)
 {
     send(cliFd, data, len, 0);
+}
+
+int line_parser(const char* data, unsigned int len, unsigned int* msg_len)
+{
+    unsigned int i;
+    for (i = 0; i < len; i++) {
+        if (data[i] == '\n') {
+            *msg_len = i + 1;
+            return 0;
+        }
+    }
+    return -1;
+}
+
+void recv_echo_msg_callback(int cliFd, const char* data, unsigned int len)
+{
+    epoll_server_send(cliFd, data, len);
 }
 
 void udp_echo_callback(int fd, struct sockaddr_in* cliaddr, const char* data, unsigned int len)
@@ -35,11 +50,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-#if 1
-    evs = epoll_tcp_server_init(atoi(argv[1]), recv_echo_callback, 1024); //tcp
-#else
-    evs = epoll_udp_server_init(atoi(argv[1]), udp_echo_callback, 1024); //udp
-#endif
+    evs = epoll_tcp_server_init_ex(atoi(argv[1]), recv_echo_msg_callback, line_parser, 1024);
     if (NULL == evs) {
         printf("epoll_server_init failed.\n");
         return -1;
